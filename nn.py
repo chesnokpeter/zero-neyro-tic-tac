@@ -1,6 +1,7 @@
 import random
 import math
 import json
+import pickle
 
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
@@ -87,26 +88,23 @@ class NeuralNetwork:
             correct_predictions = 0
 
             for inputs, expected_output in training_data:
-                # Прямое распространение
                 actual_output = self.forward(inputs)
                 
-                # Вычисляем ошибку
                 total_error += sum((expected - actual) ** 2 for expected, actual in zip(expected_output, actual_output))
                 
-                # Обратное распространение
                 self.backward(inputs, expected_output, actual_output, learning_rate)
 
-                # Оценка точности
                 predicted_index = actual_output.index(max(actual_output))
                 expected_index = expected_output.index(max(expected_output))
 
                 if predicted_index == expected_index:
                     correct_predictions += 1
-
-            # Вычисление точности
             accuracy = correct_predictions / len(training_data)
-
             print(f'Epoch {epoch + 1}/{epochs}, Error: {total_error}, Accuracy: {accuracy}')
+
+    def save(self, filename):
+        with open(filename, 'wb') as f:
+            pickle.dump(self, f)
 
 
 if __name__ == "__main__":
@@ -124,3 +122,5 @@ if __name__ == "__main__":
 
     predicted_move = output.index(max(output))
     print(f"Neural network recommends placing in cell {predicted_move + 1}")
+
+    nn.save('1.pkl')
